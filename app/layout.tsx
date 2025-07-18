@@ -32,9 +32,9 @@ export default function RootLayout({
           min-h-screen flex flex-col items-center
         `}
       >
-        <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col">
+        <main className="w-full max-w-6xl flex-1 flex flex-col justify-center items-center px-4 py-8">
           {children}
-        </div>
+        </main>
       </body>
     </html>
   );

@@ -2,148 +2,62 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border-2 border-[color:var(--accent)] transition-colors flex items-center justify-center bg-[color:var(--accent)] text-[color:var(--background)] gap-2 hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border-2 border-[color:var(--accent)] transition-colors flex items-center justify-center bg-[color:var(--accent)] text-[color:var(--background)] hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition-colors px-3 py-2"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+    <div className="flex flex-col items-center min-h-screen p-8 bg-[color:var(--background)] text-[color:var(--foreground)] font-sans">
+      <h1 className="text-3xl font-bold mb-8">Vet Clinic Locator</h1>
+      <div className="flex flex-row w-full max-w-5xl gap-8">
+        {/* Left side: Map and controls */}
+        <div className="flex flex-col items-center flex-1">
+          <div className="w-full h-80 border rounded bg-gray-100 flex items-center justify-center mb-6">
+            {/* Map placeholder */}
+            <span className="text-gray-500 text-lg">Map</span>
+          </div>
+          <input
+            type="text"
+            placeholder="Search location..."
+            className="w-full max-w-md px-4 py-2 mb-4 border rounded bg-white text-gray-800"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition-colors px-3 py-2"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition-colors px-3 py-2"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-      <div className="flex flex-col items-center min-h-screen p-12 gap-12">
-        <h1 className="text-2xl font-bold mb-4">Vet Clinic Locator</h1>
-        <div className="w-full max-w-2xl h-96 mb-4 flex items-center justify-center border rounded bg-gray-100">
-          {/* Map placeholder */}
-          <span className="text-gray-500">[Map will appear here]</span>
-        </div>
-        <div className="flex gap-4 mb-4">
-          <button
-            className="px-4 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition"
-          >
-            1 km
-          </button>
-          <button
-            className="px-4 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition"
-          >
-            5 km
-          </button>
-          <button
-            className="px-4 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition"
-          >
-            10 km
+          <div className="flex gap-4 mb-4">
+            <button className="px-4 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white transition">
+              1 km
+            </button>
+            <button className="px-4 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white transition">
+              5 km
+            </button>
+            <button className="px-4 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white transition">
+              10 km
+            </button>
+          </div>
+          <button className="px-6 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white transition mb-2">
+            Find Clinics
           </button>
         </div>
-        <button
-          className="px-6 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition"
-          disabled
-        >
-          Find Clinics
-        </button>
-        <div className="w-full max-w-xl mt-6">
-          <h2 className="text-lg font-semibold mb-2">Nearest Clinics:</h2>
-          <ul className="space-y-4">
-            <li className="p-4 border-2 border-[color:var(--accent)] rounded shadow-lg bg-white/80">
-              <div className="font-bold">[Clinic Name]</div>
-              <div>Phone: [Phone Number]</div>
-              <div>Availability: [Status]</div>
-            </li>
-            <li className="p-4 border-2 border-[color:var(--accent)] rounded shadow-lg bg-white/80">
-              <div className="font-bold">[Clinic Name]</div>
-              <div>Phone: [Phone Number]</div>
-              <div>Availability: [Status]</div>
-            </li>
-            <li className="p-4 border-2 border-[color:var(--accent)] rounded shadow-lg bg-white/80">
-              <div className="font-bold">[Clinic Name]</div>
-              <div>Phone: [Phone Number]</div>
-              <div>Availability: [Status]</div>
-            </li>
-          </ul>
+        {/* Right side: Clinic cards */}
+        <div className="flex flex-col flex-1 gap-6">
+          {[1, 2, 3].map((num) => (
+            <div
+              key={num}
+              className="p-4 border-2 border-[color:var(--accent)] rounded shadow-lg bg-white/80 flex flex-col gap-2"
+            >
+              <div className="font-bold">Clinic #{num}</div>
+              <div>
+                <span className="font-semibold">Name:</span> [Clinic Name]
+              </div>
+              <div>
+                <span className="font-semibold">Phone:</span> [Phone Number]
+              </div>
+              <div>
+                <span className="font-semibold">Availability:</span> [Status]
+              </div>
+              <a
+                href="https://clinic-website.example.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 px-3 py-1 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white transition text-center w-fit"
+              >
+                More Details
+              </a>
+            </div>
+          ))}
         </div>
       </div>
     </div>

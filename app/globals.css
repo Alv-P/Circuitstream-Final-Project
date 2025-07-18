@@ -19,5 +19,33 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  font-family: var(--font-roboto), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+}
+
+a, button {
+  font-family: inherit;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+input, textarea {
+  font-family: inherit;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--accent);
+}
+
+/* Standard utility classes for CSS variables */
+.bg-accent {
+  background-color: var(--accent) !important;
+}
+.text-background {
+  color: var(--background) !important;
+}
+.text-foreground {
+  color: var(--foreground) !important;
+}
+.border-accent {
+  border-color: var(--accent) !important;
 }

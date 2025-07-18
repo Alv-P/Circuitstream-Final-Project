@@ -25,7 +25,7 @@ export default function Home() {
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
+            className="rounded-full border-2 border-[color:var(--accent)] transition-colors flex items-center justify-center bg-[color:var(--accent)] text-[color:var(--background)] gap-2 hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
             href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
             target="_blank"
             rel="noopener noreferrer"
@@ -40,7 +40,7 @@ export default function Home() {
             Deploy now
           </a>
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
+            className="rounded-full border-2 border-[color:var(--accent)] transition-colors flex items-center justify-center bg-[color:var(--accent)] text-[color:var(--background)] hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
             href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
             target="_blank"
             rel="noopener noreferrer"
@@ -51,7 +51,7 @@ export default function Home() {
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          className="flex items-center gap-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition-colors px-3 py-2"
           href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
           target="_blank"
           rel="noopener noreferrer"
@@ -66,7 +66,7 @@ export default function Home() {
           Learn
         </a>
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          className="flex items-center gap-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition-colors px-3 py-2"
           href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
           target="_blank"
           rel="noopener noreferrer"
@@ -81,7 +81,7 @@ export default function Home() {
           Examples
         </a>
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          className="flex items-center gap-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition-colors px-3 py-2"
           href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
           target="_blank"
           rel="noopener noreferrer"
@@ -96,6 +96,56 @@ export default function Home() {
           Go to nextjs.org →
         </a>
       </footer>
+      <div className="flex flex-col items-center min-h-screen p-12 gap-12">
+        <h1 className="text-2xl font-bold mb-4">Vet Clinic Locator</h1>
+        <div className="w-full max-w-2xl h-96 mb-4 flex items-center justify-center border rounded bg-gray-100">
+          {/* Map placeholder */}
+          <span className="text-gray-500">[Map will appear here]</span>
+        </div>
+        <div className="flex gap-4 mb-4">
+          <button
+            className="px-4 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition"
+          >
+            1 km
+          </button>
+          <button
+            className="px-4 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition"
+          >
+            5 km
+          </button>
+          <button
+            className="px-4 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition"
+          >
+            10 km
+          </button>
+        </div>
+        <button
+          className="px-6 py-2 rounded border-2 border-[color:var(--accent)] bg-[color:var(--accent)] text-[color:var(--background)] shadow hover:bg-blue-400 hover:text-white focus:ring-2 focus:ring-[color:var(--accent)] transition"
+          disabled
+        >
+          Find Clinics
+        </button>
+        <div className="w-full max-w-xl mt-6">
+          <h2 className="text-lg font-semibold mb-2">Nearest Clinics:</h2>
+          <ul className="space-y-4">
+            <li className="p-4 border-2 border-[color:var(--accent)] rounded shadow-lg bg-white/80">
+              <div className="font-bold">[Clinic Name]</div>
+              <div>Phone: [Phone Number]</div>
+              <div>Availability: [Status]</div>
+            </li>
+            <li className="p-4 border-2 border-[color:var(--accent)] rounded shadow-lg bg-white/80">
+              <div className="font-bold">[Clinic Name]</div>
+              <div>Phone: [Phone Number]</div>
+              <div>Availability: [Status]</div>
+            </li>
+            <li className="p-4 border-2 border-[color:var(--accent)] rounded shadow-lg bg-white/80">
+              <div className="font-bold">[Clinic Name]</div>
+              <div>Phone: [Phone Number]</div>
+              <div>Availability: [Status]</div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

@@ -222,7 +222,7 @@ export default function Home() {
 				<div className="flex flex-col flex-1 min-h-[600px] min-w-0 gap-6 lg:mt-0">
 					{filteredClinics.length === 0 && !searchLoading && (
 						<div className="text-gray-500 text-center font-semibold">
-							No clinics found. Please search and select a location, then click "Find Clinics".
+							No clinics found. Please search and select a location, then click &quot;Find Clinics&quot;.
 						</div>
 					)}
 					{filteredClinics.map((clinic) => {

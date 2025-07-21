@@ -3,8 +3,19 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
+// Explicit Clinic type for strict typing
+type Clinic = {
+	id: number;
+	name: string;
+	phone: string;
+	availability: string;
+	website: string;
+	location: [number, number];
+	distance?: number; // <-- Add this line
+};
+
 // Example static clinic data
-const clinics = [
+const clinics: Clinic[] = [
 	{
 		id: 1,
 		name: "Downtown Toronto Vet",
@@ -68,7 +79,7 @@ export default function Home() {
 	const [searchInput, setSearchInput] = useState("");
 	const [searchLoading, setSearchLoading] = useState(false);
 	const [searchError, setSearchError] = useState("");
-	const [filteredClinics, setFilteredClinics] = useState<typeof clinics>([]);
+	const [filteredClinics, setFilteredClinics] = useState<Clinic[]>([]);
 
 	// Geocode location using Nominatim API
 	async function handleLocationSearch(e: React.FormEvent) {
@@ -105,13 +116,11 @@ export default function Home() {
 		) {
 			return;
 		}
+		const loc: [number, number] = [selectedLocation[0], selectedLocation[1]];
 		const nearby = clinics
 			.map((clinic) => ({
 				...clinic,
-				distance: getDistanceKm(
-					[selectedLocation[0], selectedLocation[1]],
-					clinic.location
-				),
+				distance: getDistanceKm(loc, clinic.location),
 			}))
 			.filter((clinic) => clinic.distance <= radius)
 			.sort((a, b) => a.distance - b.distance)

@@ -98,11 +98,20 @@ export default function Home() {
 
 	// Filter clinics by location and radius
 	function handleFindClinics() {
-		if (!selectedLocation) return;
+		if (
+			!selectedLocation ||
+			!Array.isArray(selectedLocation) ||
+			selectedLocation.length !== 2
+		) {
+			return;
+		}
 		const nearby = clinics
 			.map((clinic) => ({
 				...clinic,
-				distance: getDistanceKm(selectedLocation as [number, number], clinic.location),
+				distance: getDistanceKm(
+					[selectedLocation[0], selectedLocation[1]],
+					clinic.location
+				),
 			}))
 			.filter((clinic) => clinic.distance <= radius)
 			.sort((a, b) => a.distance - b.distance)

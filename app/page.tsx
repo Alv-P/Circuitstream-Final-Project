@@ -11,7 +11,7 @@ type Clinic = {
 	availability: string;
 	website: string;
 	location: [number, number];
-	distance?: number; // <-- Add this line
+	distance: number; // <-- Make this required
 };
 
 // Example static clinic data
@@ -23,6 +23,7 @@ const clinics: Clinic[] = [
 		availability: "Open",
 		website: "https://downtowntorontovet.example.com",
 		location: [43.6532, -79.3832], // Toronto, ON
+		distance: 0, // <-- Add distance value
 	},
 	{
 		id: 2,
@@ -31,6 +32,7 @@ const clinics: Clinic[] = [
 		availability: "Closed",
 		website: "https://vancouveranimalhospital.example.com",
 		location: [49.2827, -123.1207], // Vancouver, BC
+		distance: 0, // <-- Add distance value
 	},
 	{
 		id: 3,
@@ -39,6 +41,7 @@ const clinics: Clinic[] = [
 		availability: "Open",
 		website: "https://montrealpetclinic.example.com",
 		location: [45.5017, -73.5673], // Montreal, QC
+		distance: 0, // <-- Add distance value
 	},
 	{
 		id: 4,
@@ -47,6 +50,7 @@ const clinics: Clinic[] = [
 		availability: "Open",
 		website: "https://calgaryvetcentre.example.com",
 		location: [51.0447, -114.0719], // Calgary, AB
+		distance: 0, // <-- Add distance value
 	},
 ];
 

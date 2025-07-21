@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Explicit Clinic type for strict typing
 type Clinic = {
@@ -84,19 +84,44 @@ export default function Home() {
 	const [searchLoading, setSearchLoading] = useState(false);
 	const [searchError, setSearchError] = useState("");
 	const [filteredClinics, setFilteredClinics] = useState<Clinic[]>([]);
+	const [isOffline, setIsOffline] = useState(false);
+
+	useEffect(() => {
+		setIsOffline(!navigator.onLine);
+		function handleOnline() {
+			setIsOffline(false);
+		}
+		function handleOffline() {
+			setIsOffline(true);
+		}
+		window.addEventListener("online", handleOnline);
+		window.addEventListener("offline", handleOffline);
+		return () => {
+			window.removeEventListener("online", handleOnline);
+			window.removeEventListener("offline", handleOffline);
+		};
+	}, []);
 
 	// Geocode location using Nominatim API
 	async function handleLocationSearch(e: React.FormEvent) {
 		e.preventDefault();
 		setSearchLoading(true);
 		setSearchError("");
-		setFilteredClinics([]); // <-- Clear previous results here
+		setFilteredClinics([]);
+		if (!navigator.onLine) {
+			setSearchError("You are offline. Please check your internet connection.");
+			setSearchLoading(false);
+			return;
+		}
 		try {
 			const res = await fetch(
 				`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
 					searchInput
 				)}`
 			);
+			if (!res.ok) {
+				throw new Error("Network response was not ok");
+			}
 			const data = await res.json();
 			if (data && data.length > 0) {
 				const lat = parseFloat(data[0].lat);
@@ -105,8 +130,12 @@ export default function Home() {
 			} else {
 				setSearchError("Location not found.");
 			}
-		} catch {
-			setSearchError("Error searching location.");
+		} catch (err) {
+			setSearchError(
+				navigator.onLine
+					? "Error searching location. Please try again."
+					: "You are offline. Please check your internet connection."
+			);
 		}
 		setSearchLoading(false);
 	}
@@ -133,14 +162,19 @@ export default function Home() {
 	}
 
 	return (
-		<div className="flex flex-col items-center min-h-screen p-4 sm:p-8 bg-[color:var(--background)] text-[color:var(--foreground)] font-sans">
-			<h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">
+		<div className="flex flex-col items-center min-h-screen p-2 sm:p-4 md:p-8 bg-[color:var(--background)] text-[color:var(--foreground)] font-sans">
+			<h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 text-center">
 				Vet Clinic Locator
 			</h1>
-			<div className="flex flex-col md:flex-row w-full max-w-full gap-8">
+			{isOffline && (
+				<div className="w-full bg-red-100 text-red-700 text-center py-2 mb-2 rounded">
+					You are offline. Some features may not work.
+				</div>
+			)}
+			<div className="flex flex-col md:flex-row w-full max-w-5xl gap-4 md:gap-8">
 				{/* Left side: Map and controls */}
-				<div className="flex flex-col items-center flex-1 min-h-[600px] min-w-0">
-					<div className="w-full h-96 border rounded bg-gray-100 flex items-center justify-center mb-6">
+				<div className="flex flex-col items-center flex-1 min-h-[400px] sm:min-h-[500px] md:min-h-[600px] min-w-0">
+					<div className="w-full h-64 sm:h-80 md:h-96 border rounded bg-gray-100 flex items-center justify-center mb-4 sm:mb-6">
 						<MapComponent
 							onLocationSelect={(lat, lng) => setSelectedLocation([lat, lng])}
 							selectedLocation={selectedLocation}
@@ -149,19 +183,21 @@ export default function Home() {
 					</div>
 					<form
 						onSubmit={handleLocationSearch}
-						className="w-full flex gap-2 mb-4"
+						className="w-full flex flex-col sm:flex-row gap-2 mb-2 sm:mb-4"
 					>
 						<input
 							type="text"
 							placeholder="Search location..."
 							value={searchInput}
 							onChange={(e) => setSearchInput(e.target.value)}
-							className="w-full px-4 py-2 border rounded bg-white text-gray-800"
+							className="w-full px-4 py-3 rounded border bg-white text-gray-800 text-base"
+							aria-label="Search location"
 						/>
 						<button
 							type="submit"
-							className="px-4 py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition flex items-center justify-center"
+							className="px-4 py-3 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition flex items-center justify-center text-base"
 							disabled={searchLoading || !searchInput}
+							aria-label="Search"
 						>
 							{searchLoading ? (
 								<span className="flex items-center gap-2">
@@ -190,27 +226,54 @@ export default function Home() {
 								"Search"
 							)}
 						</button>
+						<button
+							type="button"
+							className="px-4 py-3 rounded border-2 bg-green-500 text-white border-green-500 shadow hover:bg-green-600 transition flex items-center justify-center text-base"
+							onClick={() => {
+								if (!navigator.geolocation) {
+									setSearchError("Geolocation is not supported by your browser.");
+									return;
+								}
+								setSearchLoading(true);
+								navigator.geolocation.getCurrentPosition(
+									(pos) => {
+										setSelectedLocation([pos.coords.latitude, pos.coords.longitude]);
+										setSearchLoading(false);
+										setSearchError("");
+									},
+									() => {
+										setSearchError("Unable to retrieve your location.");
+										setSearchLoading(false);
+									}
+								);
+							}}
+							aria-label="Use My Location"
+						>
+							Use My Location
+						</button>
 					</form>
 					{searchError && (
 						<div className="text-red-600 font-semibold mb-2">{searchError}</div>
 					)}
-					<div className="flex gap-4 mb-4">
+					<div className="flex gap-2 sm:gap-4 mb-2 sm:mb-4">
 						{[1, 5, 10].map((km) => (
 							<button
 								key={km}
-								className={`px-6 py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition ${
+								className={`px-4 py-2 sm:px-6 sm:py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition text-base ${
 									radius === km ? "ring-2 ring-blue-400" : ""
 								}`}
 								onClick={() => setRadius(km)}
+								aria-label={`Filter clinics within ${km} km`}
 							>
 								{km} km
 							</button>
 						))}
 					</div>
 					<button
-						className="px-6 py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition mb-2 w-full flex items-center justify-center"
+						className="px-4 py-3 sm:px-6 sm:py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition mb-2 w-full flex items-center justify-center text-base"
 						disabled={!selectedLocation || searchLoading}
 						onClick={handleFindClinics}
+						aria-label="Find Clinics"
 					>
 						{searchLoading ? (
 							<span className="flex items-center gap-2">
@@ -241,9 +304,9 @@ export default function Home() {
 					</button>
 				</div>
 				{/* Right side: Clinic cards */}
-				<div className="flex flex-col flex-1 min-h-[600px] min-w-0 gap-6 lg:mt-0">
+				<div className="flex flex-col flex-1 min-h-[400px] sm:min-h-[500px] md:min-h-[600px] min-w-0 gap-4 sm:gap-6 lg:mt-0 overflow-x-auto">
 					{filteredClinics.length === 0 && !searchLoading && (
-						<div className="text-gray-500 text-center font-semibold">
+						<div className="text-gray-500 text-center font-semibold text-base sm:text-lg">
 							No clinics found. Please search and select a location, then click &quot;Find Clinics&quot;.
 						</div>
 					)}
@@ -257,9 +320,9 @@ export default function Home() {
 						return (
 							<div
 								key={clinic.id}
-								className="p-6 border-2 border-accent rounded shadow-lg bg-white/80 flex flex-col gap-2 w-full text-gray-900"
+								className="p-4 sm:p-6 border-2 border-accent rounded shadow-lg bg-white/80 flex flex-col gap-2 w-full text-gray-900"
 							>
-								<div className="font-bold text-xl">{clinic.name}</div>
+								<div className="font-bold text-lg sm:text-xl">{clinic.name}</div>
 								<div>
 									<span className="font-semibold text-base">Phone:</span>{" "}
 									<span className="font-bold">{clinic.phone}</span>
@@ -280,7 +343,8 @@ export default function Home() {
 									href={clinic.website}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="mt-2 px-4 py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition text-center w-fit"
+									className="mt-2 px-4 py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition text-center w-fit text-base"
+									aria-label={`More details about ${clinic.name}`}
 								>
 									More Details
 								</a>

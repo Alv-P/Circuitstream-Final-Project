@@ -102,7 +102,7 @@ export default function Home() {
 		const nearby = clinics
 			.map((clinic) => ({
 				...clinic,
-				distance: getDistanceKm(selectedLocation, clinic.location),
+				distance: getDistanceKm(selectedLocation as [number, number], clinic.location),
 			}))
 			.filter((clinic) => clinic.distance <= radius)
 			.sort((a, b) => a.distance - b.distance)

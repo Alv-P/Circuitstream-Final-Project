@@ -5,17 +5,7 @@ import { useState, useEffect } from "react";
 
 // ErrorBoundary component for catching rendering errors
 function ErrorBoundary({ children }: { children: React.ReactNode }) {
-	const [hasError, setHasError] = useState(false);
-	return hasError ? (
-		<div
-			className="text-red-700 bg-red-100 p-4 rounded my-4"
-			aria-live="assertive"
-		>
-			Something went wrong. Please reload the page.
-		</div>
-	) : (
-		<>{children}</>
-	);
+	return <>{children}</>;
 }
 
 // Explicit Clinic type for strict typing
@@ -100,7 +90,6 @@ export default function Home() {
 	const [searchError, setSearchError] = useState("");
 	const [filteredClinics, setFilteredClinics] = useState<Clinic[]>([]);
 	const [isOffline, setIsOffline] = useState(false);
-	const [mapError, setMapError] = useState(false);
 
 	useEffect(() => {
 		setIsOffline(!navigator.onLine);
@@ -151,7 +140,7 @@ export default function Home() {
 			} else {
 				setSearchError("Location not found.");
 			}
-		} catch (err) {
+		} catch {
 			setSearchError(
 				navigator.onLine
 					? "Error searching location. Please try again."
@@ -182,11 +171,6 @@ export default function Home() {
 		setFilteredClinics(nearby);
 	}
 
-	// Fallback UI for map errors
-	function handleMapError() {
-		setMapError(true);
-	}
-
 	return (
 		<ErrorBoundary>
 			<div className="flex flex-col items-center min-h-screen p-2 sm:p-4 md:p-8 bg-[color:var(--background)] text-[color:var(--foreground)] font-sans">
@@ -205,20 +189,11 @@ export default function Home() {
 					{/* Left side: Map and controls */}
 					<div className="flex flex-col items-center flex-1 min-w-0">
 						<div className="w-full h-64 xs:h-80 sm:h-96 md:h-[32rem] lg:h-[36rem] border rounded bg-gray-100 flex items-center justify-center mb-4 sm:mb-6">
-							{mapError ? (
-								<div
-									className="text-red-600 text-center w-full"
-									aria-live="polite"
-								>
-									Map failed to load. Please refresh the page.
-								</div>
-							) : (
-								<MapComponent
-									onLocationSelect={(lat, lng) => setSelectedLocation([lat, lng])}
-									selectedLocation={selectedLocation}
-									clinicMarkers={filteredClinics}
-								/>
-							)}
+							<MapComponent
+								onLocationSelect={(lat, lng) => setSelectedLocation([lat, lng])}
+								selectedLocation={selectedLocation}
+								clinicMarkers={filteredClinics}
+							/>
 						</div>
 						<form
 							onSubmit={handleLocationSearch}

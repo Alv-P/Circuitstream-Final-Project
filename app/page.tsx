@@ -171,10 +171,10 @@ export default function Home() {
 					You are offline. Some features may not work.
 				</div>
 			)}
-			<div className="flex flex-col md:flex-row w-full max-w-5xl gap-4 md:gap-8">
+			<div className="flex flex-col lg:flex-row w-full max-w-6xl gap-6">
 				{/* Left side: Map and controls */}
-				<div className="flex flex-col items-center flex-1 min-h-[400px] sm:min-h-[500px] md:min-h-[600px] min-w-0">
-					<div className="w-full h-64 sm:h-80 md:h-96 border rounded bg-gray-100 flex items-center justify-center mb-4 sm:mb-6">
+				<div className="flex flex-col items-center flex-1 min-w-0">
+					<div className="w-full h-64 xs:h-80 sm:h-96 md:h-[32rem] lg:h-[36rem] border rounded bg-gray-100 flex items-center justify-center mb-4 sm:mb-6">
 						<MapComponent
 							onLocationSelect={(lat, lng) => setSelectedLocation([lat, lng])}
 							selectedLocation={selectedLocation}
@@ -304,9 +304,9 @@ export default function Home() {
 					</button>
 				</div>
 				{/* Right side: Clinic cards */}
-				<div className="flex flex-col flex-1 min-h-[400px] sm:min-h-[500px] md:min-h-[600px] min-w-0 gap-4 sm:gap-6 lg:mt-0 overflow-x-auto">
+				<div className="flex flex-row lg:flex-col flex-1 min-w-0 gap-4 sm:gap-6 overflow-x-auto pb-2">
 					{filteredClinics.length === 0 && !searchLoading && (
-						<div className="text-gray-500 text-center font-semibold text-base sm:text-lg">
+						<div className="text-gray-500 text-center font-semibold text-base sm:text-lg min-w-[250px]">
 							No clinics found. Please search and select a location, then click &quot;Find Clinics&quot;.
 						</div>
 					)}

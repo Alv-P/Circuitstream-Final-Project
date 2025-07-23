@@ -36,7 +36,7 @@ export default function RootLayout({
         {/* Header always full width and sticky above content */}
         <header className="fixed top-0 left-0 z-50 w-full bg-accent text-background shadow rounded-b-xl">
           <nav className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
-            <div className="font-bold text-lg sm:text-xl">
+            <div className="font-bold text-base sm:text-lg md:text-xl">
               Vet Clinic Locator
             </div>
             <div className="flex gap-2 sm:gap-4">

@@ -42,19 +42,19 @@ export default function RootLayout({
             <div className="flex gap-2 sm:gap-4">
               <Link
                 href="/"
-                className="px-4 py-2 rounded-full bg-background text-blue-300 border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold"
+                className="px-4 py-2 rounded-full bg-background text-blue-300 border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold flex items-center justify-center"
               >
                 Home
               </Link>
               <Link
                 href="/feedback"
-                className="px-4 py-2 rounded-full bg-background text-blue-300 border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold"
+                className="px-4 py-2 rounded-full bg-background text-blue-300 border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold flex items-center justify-center"
               >
                 Feedback
               </Link>
               <Link
                 href="/about"
-                className="px-4 py-2 rounded-full bg-background text-blue-300 border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold"
+                className="px-4 py-2 rounded-full bg-background text-blue-300 border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold flex items-center justify-center"
               >
                 About Us
               </Link>

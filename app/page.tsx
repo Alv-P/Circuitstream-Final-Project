@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 
@@ -79,7 +78,7 @@ function getDistanceKm(
 }
 
 // Dynamically import MapComponent to avoid SSR issues
-const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
+const DynamicMapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 
 export default function Home() {
     const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(
@@ -174,56 +173,47 @@ export default function Home() {
 
     return (
         <ErrorBoundary>
-            {/* Header Menu */}
-            <header className="w-full bg-accent text-background shadow mb-4">
-                <nav className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
-                    <div className="font-bold text-lg sm:text-xl">
-                        Vet Clinic Locator
-                    </div>
-                    <div className="flex gap-2 sm:gap-4">
-                        <Link
-                            href="/"
-                            className="px-4 py-2 rounded bg-background text-accent border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold"
-                        >
-                            Home
-                        </Link>
-                        <Link
-                            href="/feedback"
-                            className="px-4 py-2 rounded bg-background text-accent border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold"
-                        >
-                            Feedback
-                        </Link>
-                        <Link
-                            href="/about"
-                            className="px-4 py-2 rounded bg-background text-accent border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold"
-                        >
-                            About Us
-                        </Link>
-                    </div>
-                </nav>
-            </header>
             {/* Main App Content */}
-            <div className="flex flex-col items-center min-h-screen p-2 sm:p-4 md:p-8 bg-[color:var(--background)] text-[color:var(--foreground)] font-sans">
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 text-center">
-                    Vet Clinic Locator
-                </h1>
-                {isOffline && (
-                    <div
-                        className="w-full bg-red-100 text-red-700 text-center py-2 mb-2 rounded"
-                        aria-live="polite"
-                    >
-                        You are offline. Some features may not work.
-                    </div>
-                )}
-                <div className="flex flex-col lg:flex-row w-full max-w-6xl gap-6">
-                    {/* Left side: Map and controls */}
-                    <div className="flex flex-col items-center flex-1 min-w-0">
-                        <div className="w-full h-64 xs:h-80 sm:h-96 md:h-[32rem] lg:h-[36rem] border rounded bg-gray-100 flex items-center justify-center mb-4 sm:mb-6">
-                            <MapComponent
+            <div className="w-full min-h-screen p-2 sm:p-4 md:p-8 bg-[color:var(--background)] text-[color:var(--foreground)] font-sans flex flex-col items-center">
+                <div className="w-full max-w-3xl flex flex-col items-center mx-auto">
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 text-center">
+                        Vet Clinic Locator
+                    </h1>
+                    {isOffline && (
+                        <div
+                            className="w-full bg-red-100 text-red-700 text-center py-2 mb-2 rounded"
+                            aria-live="polite"
+                        >
+                            You are offline. Some features may not work.
+                        </div>
+                    )}
+                    <div className="w-full">
+                        <div className="w-full h-64 xs:h-80 sm:h-96 md:h-[32rem] lg:h-[36rem] border rounded bg-gray-100 flex items-center justify-center mb-4 sm:mb-6 z-0 relative">
+                            <DynamicMapComponent
                                 onLocationSelect={(lat, lng) => setSelectedLocation([lat, lng])}
                                 selectedLocation={selectedLocation}
                                 clinicMarkers={filteredClinics}
                             />
+                            {searchLoading && (
+                                <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
+                                    <svg className="animate-spin h-10 w-10 text-blue-500" viewBox="0 0 24 24">
+                                        <circle
+                                            className="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                            fill="none"
+                                        />
+                                        <path
+                                            className="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8v8z"
+                                        />
+                                    </svg>
+                                </div>
+                            )}
                         </div>
                         <form
                             onSubmit={handleLocationSearch}
@@ -270,41 +260,41 @@ export default function Home() {
                                     "Search"
                                 )}
                             </button>
-                            <button
-                                type="button"
-                                className="px-4 py-3 rounded border-2 bg-green-500 text-white border-green-500 shadow hover:bg-green-600 transition flex items-center justify-center text-base"
-                                onClick={() => {
-                                    if (!navigator.geolocation) {
-                                        setSearchError("Geolocation is not supported by your browser.");
-                                        return;
-                                    }
-                                    setSearchLoading(true);
-                                    navigator.geolocation.getCurrentPosition(
-                                        (pos) => {
-                                            setSelectedLocation([pos.coords.latitude, pos.coords.longitude]);
-                                            setSearchLoading(false);
-                                            setSearchError("");
-                                        },
-                                        () => {
-                                            setSearchError("Unable to retrieve your location.");
-                                            setSearchLoading(false);
-                                        }
-                                    );
-                                }}
-                                aria-label="Use My Location"
-                            >
-                                Use My Location
-                            </button>
                         </form>
-                        {searchError && (
-                            <div
-                                className="text-red-600 font-semibold mb-2"
-                                aria-live="polite"
-                            >
-                                {searchError}
-                            </div>
-                        )}
-                        <div className="flex gap-2 sm:gap-4 mb-2 sm:mb-4">
+                        <button
+                            type="button"
+                            className="w-full px-4 py-3 rounded border-2 bg-green-500 text-white border-green-500 shadow hover:bg-green-600 transition flex items-center justify-center text-base mb-2"
+                            onClick={() => {
+                                if (!navigator.geolocation) {
+                                    setSearchError("Geolocation is not supported by your browser.");
+                                    return;
+                                }
+                                setSearchLoading(true);
+                                navigator.geolocation.getCurrentPosition(
+                                    (pos) => {
+                                        setSelectedLocation([pos.coords.latitude, pos.coords.longitude]);
+                                        setSearchLoading(false);
+                                        setSearchError("");
+                                    },
+                                    () => {
+                                        setSearchError("Unable to retrieve your location.");
+                                        setSearchLoading(false);
+                                    }
+                                );
+                            }}
+                            aria-label="Use My Location"
+                        >
+                            Use My Location
+                        </button>
+                        {/* Reserve space for error message to prevent layout shift */}
+                        <div style={{ minHeight: "2rem" }}>
+                            {searchError && (
+                                <div className="text-red-600 font-semibold mb-2" aria-live="polite">
+                                    {searchError}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex justify-center gap-2 sm:gap-4 mb-2 sm:mb-4">
                             {[1, 5, 10].map((km) => (
                                 <button
                                     key={km}
@@ -352,94 +342,34 @@ export default function Home() {
                             )}
                         </button>
                     </div>
-                    {/* Right side: Clinic cards */}
-                    <div className="flex flex-row lg:flex-col flex-1 min-w-0 gap-4 sm:gap-6 overflow-x-auto pb-2">
-                        {filteredClinics.length === 0 && !searchLoading && (
-                            <div className="text-gray-500 text-center font-semibold text-base sm:text-lg min-w-[250px]">
-                                No clinics found. Please search and select a location, then click
-                                &quot;Find Clinics&quot;.
-                            </div>
-                        )}
-                        {filteredClinics.map((clinic) => {
-                            const availabilityColor =
-                                clinic.availability.toLowerCase() === "open"
-                                    ? "text-green-600 font-bold"
-                                    : clinic.availability.toLowerCase() === "closed"
-                                    ? "text-red-600 font-bold"
-                                    : "text-gray-700 font-bold";
-                            return (
+                    {filteredClinics.length > 0 && (
+                        <div className="w-full mt-4 flex flex-col gap-4">
+                            {filteredClinics.map((clinic) => (
                                 <div
                                     key={clinic.id}
-                                    className="p-4 sm:p-6 border-2 border-accent rounded shadow-lg bg-white/80 flex flex-col gap-2 min-w-[250px] w-full text-gray-900"
+                                    className="border rounded-lg p-4 bg-white shadow flex flex-col sm:flex-row items-start sm:items-center justify-between animate-fadeInCard"
                                 >
-                                    <div className="font-bold text-lg sm:text-xl">
-                                        {clinic.name}
-                                    </div>
                                     <div>
-                                        <span className="font-semibold text-base">Phone:</span>{" "}
-                                        <span className="font-bold">{clinic.phone}</span>
+                                        <h2 className="font-bold text-lg mb-1 text-gray-900">{clinic.name}</h2>
+                                        <div className="text-gray-700 mb-1">Phone: {clinic.phone}</div>
+                                        <div className="text-gray-700 mb-1">Availability: {clinic.availability}</div>
+                                        <a
+                                            href={clinic.website}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-500 underline"
+                                        >
+                                            More Details
+                                        </a>
                                     </div>
-                                    <div>
-                                        <span className="font-semibold text-base">Availability:</span>{" "}
-                                        <span className={availabilityColor}>
-                                            {clinic.availability}
-                                        </span>
+                                    <div className="mt-2 sm:mt-0 sm:ml-4 text-sm text-gray-500">
+                                        {clinic.distance.toFixed(2)} km away
                                     </div>
-                                    <div>
-                                        <span className="font-semibold text-base">Distance:</span>{" "}
-                                        <span className="font-bold">
-                                            {clinic.distance.toFixed(2)} km
-                                        </span>
-                                    </div>
-                                    <a
-                                        href={clinic.website}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="mt-2 px-4 py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition text-center w-fit text-base"
-                                        aria-label={`More details about ${clinic.name}`}
-                                    >
-                                        More Details
-                                    </a>
                                 </div>
-                            );
-                        })}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
-                {/* Feedback Section */}
-                <section id="feedback" className="w-full max-w-3xl mx-auto mt-16 mb-16 p-6 bg-white rounded shadow">
-                    <h2 className="text-2xl font-bold mb-4 text-accent">Feedback</h2>
-                    <form
-                        className="flex flex-col gap-4"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            alert("Thank you for your feedback!");
-                        }}
-                    >
-                        <label className="font-semibold">
-                            Your Feedback:
-                            <textarea
-                                className="w-full mt-2 p-2 border rounded"
-                                rows={4}
-                                required
-                            />
-                        </label>
-                        <button
-                            type="submit"
-                            className="px-4 py-2 rounded bg-accent text-background border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition font-semibold"
-                        >
-                            Submit
-                        </button>
-                    </form>
-                </section>
-                {/* About Us Section */}
-                <section id="about" className="w-full max-w-3xl mx-auto mb-16 p-6 bg-white rounded shadow">
-                    <h2 className="text-2xl font-bold mb-4 text-accent">About Us</h2>
-                    <p className="text-base text-gray-700">
-                        Vet Clinic Locator is a project to help pet owners easily find veterinary clinics near them.
-                        Our mission is to make pet care accessible and convenient for everyone.
-                        This app uses open data and mapping technology to provide accurate, up-to-date information.
-                    </p>
-                </section>
             </div>
         </ErrorBoundary>
     );

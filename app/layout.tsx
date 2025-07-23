@@ -1,19 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { Roboto, Geist_Mono } from "next/font/google";
+import { Josefin_Sans, Nunito, Roboto } from "next/font/google";
 import "./globals.css";
 import { useState } from "react";
+
+const josefinSans = Josefin_Sans({
+  variable: "--font-josefin",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
 
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
   weight: ["400", "700"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
 });
 
 export default function RootLayout({
@@ -27,7 +34,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`
-          ${roboto.variable} ${geistMono.variable} antialiased
+          ${josefinSans.variable} ${nunito.variable} ${roboto.variable} antialiased
           bg-[color:var(--background)] text-[color:var(--foreground)]
           min-h-screen font-sans
         `}

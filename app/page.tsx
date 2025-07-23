@@ -176,9 +176,12 @@ export default function Home() {
             {/* Main App Content */}
             <div className="w-full min-h-screen p-2 sm:p-4 md:p-8 bg-[color:var(--background)] text-[color:var(--foreground)] font-sans flex flex-col items-center">
                 <div className="w-full max-w-3xl flex flex-col items-center mx-auto">
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 text-center">
-                        Vet Clinic Locator
+                    <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 sm:mb-4 md:mb-6 text-center">
+                        Clinic Locator
                     </h1>
+                    <p className="text-lg sm:text-xl md:text-2xl text-center mb-4 text-accent2">
+                        Find veterinary clinics near you
+                    </p>
                     {isOffline && (
                         <div
                             className="w-full bg-red-100 text-red-700 text-center py-2 mb-2 rounded"
@@ -350,7 +353,7 @@ export default function Home() {
                                     className="border rounded-lg p-4 bg-white shadow flex flex-col sm:flex-row items-start sm:items-center justify-between animate-fadeInCard"
                                 >
                                     <div>
-                                        <h2 className="font-bold text-lg mb-1 text-gray-900">{clinic.name}</h2>
+                                        <h2 className="font-bold text-lg mb-1 text-accent card-details">{clinic.name}</h2>
                                         <div className="text-gray-700 mb-1">Phone: {clinic.phone}</div>
                                         <div className="text-gray-700 mb-1">Availability: {clinic.availability}</div>
                                         <a
@@ -362,7 +365,7 @@ export default function Home() {
                                             More Details
                                         </a>
                                     </div>
-                                    <div className="mt-2 sm:mt-0 sm:ml-4 text-sm text-gray-500">
+                                    <div className="mt-2 sm:mt-0 sm:ml-4 text-sm text-accent3 card-meta">
                                         {clinic.distance.toFixed(2)} km away
                                     </div>
                                 </div>

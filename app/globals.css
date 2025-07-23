@@ -19,7 +19,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-roboto), Arial, Helvetica, sans-serif;
+  font-family: var(--font-nunito), Arial, Helvetica, sans-serif;
   min-height: 100vh;
   margin: 0;
 }
@@ -57,4 +57,21 @@ input, textarea {
 .animate-fadeInCard {
   opacity: 0;
   animation: fadeInCard 0.4s ease forwards;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-josefin), var(--font-nunito), Arial, Helvetica, sans-serif;
+}
+
+.header-title {
+  font-family: var(--font-josefin), var(--font-nunito), Arial, Helvetica, sans-serif;
+}
+
+.card-details, .card-meta, .button, input, textarea {
+  font-family: var(--font-nunito), Arial, Helvetica, sans-serif;
+}
+
+/* If you want to use Muli for some UI elements: */
+.muli {
+  font-family: var(--font-muli), Arial, Helvetica, sans-serif;
 }

@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import { Roboto, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { useState } from "react";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -14,16 +16,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Vet Clinic Locator",
-  description: "Find veterinary clinics near you",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <html lang="en">
       <body
@@ -39,25 +38,53 @@ export default function RootLayout({
             <div className="font-bold text-base sm:text-lg md:text-xl">
               Vet Clinic Locator
             </div>
-            <div className="flex gap-2 sm:gap-4">
-              <Link
-                href="/"
+            <div className="relative">
+              <button
                 className="px-4 py-2 rounded-full bg-background text-blue-300 border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold flex items-center justify-center"
+                onClick={() => setMenuOpen((open) => !open)}
+                aria-haspopup="true"
+                aria-expanded={menuOpen}
               >
-                Home
-              </Link>
-              <Link
-                href="/feedback"
-                className="px-4 py-2 rounded-full bg-background text-blue-300 border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold flex items-center justify-center"
-              >
-                Feedback
-              </Link>
-              <Link
-                href="/about"
-                className="px-4 py-2 rounded-full bg-background text-blue-300 border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold flex items-center justify-center"
-              >
-                About Us
-              </Link>
+                Menu
+                <svg
+                  className="ml-2 w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {menuOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg border z-50">
+                  <Link
+                    href="/"
+                    className="block px-4 py-2 text-blue-700 hover:bg-blue-100 transition text-base font-semibold"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/feedback"
+                    className="block px-4 py-2 text-blue-700 hover:bg-blue-100 transition text-base font-semibold"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Feedback
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="block px-4 py-2 text-blue-700 hover:bg-blue-100 transition text-base font-semibold"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    About Us
+                  </Link>
+                </div>
+              )}
             </div>
           </nav>
         </header>

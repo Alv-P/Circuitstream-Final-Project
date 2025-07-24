@@ -80,6 +80,20 @@ function getDistanceKm(
 // Dynamically import MapComponent to avoid SSR issues
 const DynamicMapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 
+// Add this function above your Home component
+async function reverseGeocode(lat: number, lon: number): Promise<string> {
+    try {
+        const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+        );
+        if (!res.ok) return "";
+        const data = await res.json();
+        return data.display_name || "";
+    } catch {
+        return "";
+    }
+}
+
 export default function Home() {
     const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(
         null
@@ -171,6 +185,13 @@ export default function Home() {
         setFilteredClinics(nearby);
     }
 
+    // Add this handler inside your Home component:
+    async function handleMapLocationSelect(lat: number, lng: number) {
+        setSelectedLocation([lat, lng]);
+        const address = await reverseGeocode(lat, lng);
+        if (address) setSearchInput(address);
+    }
+
     return (
         <ErrorBoundary>
             {/* Main App Content */}
@@ -193,7 +214,7 @@ export default function Home() {
                     <div className="w-full">
                         <div className="w-full h-64 xs:h-80 sm:h-96 md:h-[32rem] lg:h-[36rem] border rounded bg-gray-100 flex items-center justify-center mb-4 sm:mb-6 z-0 relative">
                             <DynamicMapComponent
-                                onLocationSelect={(lat, lng) => setSelectedLocation([lat, lng])}
+                                onLocationSelect={handleMapLocationSelect}
                                 selectedLocation={selectedLocation}
                                 clinicMarkers={filteredClinics}
                             />
@@ -302,7 +323,7 @@ export default function Home() {
                                 <button
                                     key={km}
                                     className={`px-4 py-2 sm:px-6 sm:py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition text-base ${
-                                        radius === km ? "ring-2 ring-blue-400" : ""
+                                        radius === km ? "ring-2 ring-blue-400 text-white" : ""
                                     }`}
                                     onClick={() => setRadius(km)}
                                     aria-label={`Filter clinics within ${km} km`}

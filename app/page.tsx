@@ -19,6 +19,7 @@ type Clinic = {
     website: string;
     location: [number, number];
     distance: number;
+    rating: number; // Add rating
 };
 
 // Example static clinic data
@@ -31,6 +32,7 @@ const clinics: Clinic[] = [
         website: "https://downtowntorontovet.example.com",
         location: [43.6532, -79.3832],
         distance: 0,
+        rating: 4.7,
     },
     {
         id: 2,
@@ -40,6 +42,7 @@ const clinics: Clinic[] = [
         website: "https://vancouveranimalhospital.example.com",
         location: [49.2827, -123.1207],
         distance: 0,
+        rating: 4.2,
     },
     {
         id: 3,
@@ -49,6 +52,7 @@ const clinics: Clinic[] = [
         website: "https://montrealpetclinic.example.com",
         location: [45.5017, -73.5673],
         distance: 0,
+        rating: 4.8,
     },
     {
         id: 4,
@@ -58,6 +62,91 @@ const clinics: Clinic[] = [
         website: "https://calgaryvetcentre.example.com",
         location: [51.0447, -114.0719],
         distance: 0,
+        rating: 4.5,
+    },
+    // Toronto
+    {
+        id: 5,
+        name: "Queen Street Animal Hospital",
+        phone: "416-555-2345",
+        availability: "Open",
+        website: "https://queenstreetanimalhospital.example.com",
+        location: [43.6500, -79.3840],
+        distance: 0,
+        rating: 4.6,
+    },
+    {
+        id: 6,
+        name: "Liberty Village Vet",
+        phone: "416-555-3456",
+        availability: "Closed",
+        website: "https://libertyvillagevet.example.com",
+        location: [43.6386, -79.4220],
+        distance: 0,
+        rating: 4.1,
+    },
+    // Vancouver
+    {
+        id: 7,
+        name: "West End Pet Clinic",
+        phone: "604-555-6789",
+        availability: "Open",
+        website: "https://westendpetclinic.example.com",
+        location: [49.2850, -123.1200],
+        distance: 0,
+        rating: 4.9,
+    },
+    {
+        id: 8,
+        name: "Kitsilano Veterinary Clinic",
+        phone: "604-555-7890",
+        availability: "Open",
+        website: "https://kitsilanovetclinic.example.com",
+        location: [49.2640, -123.1680],
+        distance: 0,
+        rating: 4.3,
+    },
+    // Montreal
+    {
+        id: 9,
+        name: "Plateau Animal Hospital",
+        phone: "514-555-9876",
+        availability: "Closed",
+        website: "https://plateauanimalhospital.example.com",
+        location: [45.5215, -73.5735],
+        distance: 0,
+        rating: 4.0,
+    },
+    {
+        id: 10,
+        name: "Old Montreal Vet",
+        phone: "514-555-6543",
+        availability: "Open",
+        website: "https://oldmontrealvet.example.com",
+        location: [45.5075, -73.5540],
+        distance: 0,
+        rating: 4.4,
+    },
+    // Calgary
+    {
+        id: 11,
+        name: "Inglewood Pet Clinic",
+        phone: "403-555-5432",
+        availability: "Open",
+        website: "https://inglewoodpetclinic.example.com",
+        location: [51.0380, -114.0340],
+        distance: 0,
+        rating: 4.6,
+    },
+    {
+        id: 12,
+        name: "Bridgeland Vet Hospital",
+        phone: "403-555-6543",
+        availability: "Closed",
+        website: "https://bridgelandvethospital.example.com",
+        location: [51.0580, -114.0490],
+        distance: 0,
+        rating: 4.2,
     },
 ];
 
@@ -90,6 +179,7 @@ export default function Home() {
     const [filteredClinics, setFilteredClinics] = useState<Clinic[]>([]);
     const [isOffline, setIsOffline] = useState(false);
     const [loadingAction, setLoadingAction] = useState<null | "search" | "findClinics" | "geolocation">(null);
+    const [filter, setFilter] = useState<"nearest" | "rating" | "open">("nearest"); // Add filter state
 
     useEffect(() => {
         setIsOffline(!navigator.onLine);
@@ -175,16 +265,41 @@ export default function Home() {
             return;
         }
         const loc: [number, number] = [selectedLocation[0], selectedLocation[1]];
-        const nearby = clinics
+        let nearby = clinics
             .map((clinic) => ({
                 ...clinic,
                 distance: getDistanceKm(loc, clinic.location),
             }))
-            .filter((clinic) => clinic.distance <= radius)
-            .sort((a, b) => a.distance - b.distance)
-            .slice(0, 3);
+            .filter((clinic) => clinic.distance <= radius);
+
+        if (filter === "nearest") {
+            nearby = nearby.sort((a, b) => a.distance - b.distance);
+        } else if (filter === "rating") {
+            nearby = nearby.sort((a, b) => b.rating - a.rating);
+        } else if (filter === "open") {
+            nearby = nearby.filter((clinic) => clinic.availability === "Open")
+                .sort((a, b) => a.distance - b.distance);
+        }
+
         setFilteredClinics(nearby);
         setLoadingAction(null);
+    }
+
+    function renderStars(rating: number) {
+        const fullStars = Math.floor(rating);
+        const halfStar = rating - fullStars >= 0.5;
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+        return (
+            <>
+                {Array(fullStars).fill("★").map((star, i) => (
+                    <span key={"full" + i} className="text-yellow-500">{star}</span>
+                ))}
+                {halfStar && <span className="text-yellow-500">☆</span>}
+                {Array(emptyStars).fill("☆").map((star, i) => (
+                    <span key={"empty" + i} className="text-gray-300">{star}</span>
+                ))}
+            </>
+        );
     }
 
     return (
@@ -305,6 +420,22 @@ export default function Home() {
                                 </button>
                             ))}
                         </div>
+                        {/* Add filter controls ABOVE the Find Clinics button */}
+                        <div className="flex justify-center w-full gap-4 mb-6">
+                            <label className="font-semibold text-base text-white">
+                                Filter:
+                                <select
+                                    value={filter}
+                                    onChange={e => setFilter(e.target.value as "nearest" | "rating" | "open")}
+                                    className="ml-2 px-2 py-1 rounded border text-gray-700 bg-white focus:text-gray-700 transition"
+                                    style={{ minWidth: "140px" }}
+                                >
+                                    <option value="nearest" className="text-gray-700 bg-white">Nearest</option>
+                                    <option value="rating" className="text-gray-700 bg-white">Highest Rating</option>
+                                    <option value="open" className="text-gray-700 bg-white">Open Only</option>
+                                </select>
+                            </label>
+                        </div>
                         <button
                             className="px-4 py-3 sm:px-6 sm:py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition mb-2 w-full flex items-center justify-center text-base"
                             disabled={!selectedLocation || loadingAction !== null}
@@ -336,6 +467,7 @@ export default function Home() {
                                         <h2 className="font-bold text-lg mb-1 text-gray-700 card-details">{clinic.name}</h2>
                                         <div className="text-gray-700 mb-1">Phone: {clinic.phone}</div>
                                         <div className="text-gray-700 mb-1">Availability: {clinic.availability}</div>
+                                        <div className="text-yellow-600 mb-1">Rating: {clinic.rating} ⭐</div>
                                         <a
                                             href={clinic.website}
                                             target="_blank"
@@ -348,6 +480,17 @@ export default function Home() {
                                     <div className="mt-2 sm:mt-0 sm:ml-4 text-sm text-accent3 card-meta">
                                         {clinic.distance.toFixed(2)} km away
                                     </div>
+                                    {/* Directions Button */}
+                                    {selectedLocation && (
+                                        <a
+                                            href={`https://www.google.com/maps/dir/${selectedLocation[0]},${selectedLocation[1]}/${clinic.location[0]},${clinic.location[1]}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="mt-2 sm:mt-0 sm:ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm font-semibold"
+                                        >
+                                            Directions
+                                        </a>
+                                    )}
                                 </div>
                             ))}
                         </div>

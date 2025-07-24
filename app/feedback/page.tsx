@@ -2,21 +2,36 @@
 
 import { useState } from "react";
 
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export default function FeedbackPage() {
   const [feedback, setFeedback] = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [confirmation, setConfirmation] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!isValidEmail(email)) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+    setEmailError("");
     setLoading(true);
     const res = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ feedback }),
+      body: JSON.stringify({ feedback, email }),
     });
     setLoading(false);
     if (res.ok) {
       setFeedback("");
+      setEmail("");
+      setConfirmation(true);
+      setTimeout(() => setConfirmation(false), 2000); // Show for 2 seconds
     }
   }
 
@@ -29,6 +44,17 @@ export default function FeedbackPage() {
         <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
           Feedback
         </h1>
+        <input
+          type="email"
+          className="w-full p-4 border rounded focus:outline-none focus:ring-2 focus:ring-accent text-base"
+          placeholder="Your email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        {emailError && (
+          <div className="text-red-600 font-semibold mb-2">{emailError}</div>
+        )}
         <textarea
           className="w-full p-4 border rounded focus:outline-none focus:ring-2 focus:ring-accent text-base"
           rows={6}
@@ -44,6 +70,11 @@ export default function FeedbackPage() {
         >
           {loading ? "Sending..." : "Submit"}
         </button>
+        {confirmation && (
+          <div className="text-green-600 font-semibold text-center mt-2">
+            Sent!
+          </div>
+        )}
       </form>
     </div>
   );

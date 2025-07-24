@@ -21,11 +21,14 @@ export default function FeedbackPage() {
     }
     setEmailError("");
     setLoading(true);
+
+    // Send to local API
     const res = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ feedback, email }),
     });
+
     setLoading(false);
     if (res.ok) {
       setFeedback("");

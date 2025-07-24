@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
+type FeedbackResponse = { email: string; feedback: string; date: string };
+
 const FEEDBACK_FILE = path.join(process.cwd(), "feedback.json");
 
 export async function POST(request: Request) {
   const { email, feedback } = await request.json();
-  let data: any[] = [];
+  let data: FeedbackResponse[] = [];
   try {
     if (fs.existsSync(FEEDBACK_FILE)) {
       data = JSON.parse(fs.readFileSync(FEEDBACK_FILE, "utf8"));
@@ -18,7 +20,7 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  let data: any[] = [];
+  let data: FeedbackResponse[] = [];
   try {
     if (fs.existsSync(FEEDBACK_FILE)) {
       data = JSON.parse(fs.readFileSync(FEEDBACK_FILE, "utf8"));

@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const ADMIN_PASSWORD = "yourSecretPassword"; // Change this to your own password
+type FeedbackResponse = { email: string; feedback: string; date: string };
+
+const ADMIN_PASSWORD = "yourSecretPassword";
 
 export default function AdminFeedbackPage() {
-  const [responses, setResponses] = useState<any[]>([]);
+  const [responses, setResponses] = useState<FeedbackResponse[]>([]);
   const [authorized, setAuthorized] = useState(false);
   const [input, setInput] = useState("");
 

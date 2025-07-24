@@ -467,7 +467,10 @@ export default function Home() {
                                         <h2 className="font-bold text-lg mb-1 text-gray-700 card-details">{clinic.name}</h2>
                                         <div className="text-gray-700 mb-1">Phone: {clinic.phone}</div>
                                         <div className="text-gray-700 mb-1">Availability: {clinic.availability}</div>
-                                        <div className="text-yellow-600 mb-1">Rating: {clinic.rating} ⭐</div>
+                                        <div className="text-yellow-600 mb-1 flex items-center">
+                                            Rating: {renderStars(clinic.rating)}
+                                            <span className="ml-2 text-gray-700 text-sm">({clinic.rating.toFixed(1)})</span>
+                                        </div>
                                         <a
                                             href={clinic.website}
                                             target="_blank"

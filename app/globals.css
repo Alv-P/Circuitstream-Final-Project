@@ -3,17 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --background: #1a2a3a;         /* semi-dark blue */
-  --foreground: #eaf4fb;         /* lightly blue-tinged white */
-  --accent: #7ec3f7;             /* light blue */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #14213d;       /* darker blue for dark mode */
-    --foreground: #dbeafe;       /* lighter blue-tinged white */
-    --accent: #60a5fa;           /* slightly deeper light blue */
-  }
+  --background: #22223b;
+  --foreground: #f8fafc;
+  --accent: #3a86ff;
+  --accent2: #4361ee;
+  --accent3: #b5179e;
 }
 
 body {

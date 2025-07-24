@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
+import { Cardio } from "ldrs/react";
+import "ldrs/react/Cardio.css";
 
 // ErrorBoundary component for catching rendering errors
 function ErrorBoundary({ children }: { children: React.ReactNode }) {
@@ -80,30 +82,14 @@ function getDistanceKm(
 // Dynamically import MapComponent to avoid SSR issues
 const DynamicMapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 
-// Add this function above your Home component
-async function reverseGeocode(lat: number, lon: number): Promise<string> {
-    try {
-        const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
-        );
-        if (!res.ok) return "";
-        const data = await res.json();
-        return data.display_name || "";
-    } catch {
-        return "";
-    }
-}
-
 export default function Home() {
-    const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(
-        null
-    );
+    const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(null);
     const [radius, setRadius] = useState<number>(1);
     const [searchInput, setSearchInput] = useState("");
-    const [searchLoading, setSearchLoading] = useState(false);
     const [searchError, setSearchError] = useState("");
     const [filteredClinics, setFilteredClinics] = useState<Clinic[]>([]);
     const [isOffline, setIsOffline] = useState(false);
+    const [loadingAction, setLoadingAction] = useState<null | "search" | "findClinics" | "geolocation">(null);
 
     useEffect(() => {
         setIsOffline(!navigator.onLine);
@@ -124,12 +110,12 @@ export default function Home() {
     // Geocode location using Nominatim API
     async function handleLocationSearch(e: React.FormEvent) {
         e.preventDefault();
-        setSearchLoading(true);
+        setLoadingAction("search");
         setSearchError("");
         setFilteredClinics([]);
         if (!navigator.onLine) {
             setSearchError("You are offline. Please check your internet connection.");
-            setSearchLoading(false);
+            setLoadingAction(null);
             return;
         }
         try {
@@ -140,7 +126,7 @@ export default function Home() {
             );
             if (res.status === 429) {
                 setSearchError("Too many requests. Please wait and try again.");
-                setSearchLoading(false);
+                setLoadingAction(null);
                 return;
             }
             if (!res.ok) {
@@ -161,11 +147,26 @@ export default function Home() {
                     : "You are offline. Please check your internet connection."
             );
         }
-        setSearchLoading(false);
+        setLoadingAction(null);
+    }
+
+    // Helper: Reverse geocode coordinates to address
+    async function reverseGeocode(lat: number, lon: number) {
+        try {
+            const res = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+            );
+            if (!res.ok) return "";
+            const data = await res.json();
+            return data.display_name || "";
+        } catch {
+            return "";
+        }
     }
 
     // Filter clinics by location and radius
     function handleFindClinics() {
+        setLoadingAction("findClinics");
         if (
             !selectedLocation ||
             !Array.isArray(selectedLocation) ||
@@ -183,13 +184,7 @@ export default function Home() {
             .sort((a, b) => a.distance - b.distance)
             .slice(0, 3);
         setFilteredClinics(nearby);
-    }
-
-    // Add this handler inside your Home component:
-    async function handleMapLocationSelect(lat: number, lng: number) {
-        setSelectedLocation([lat, lng]);
-        const address = await reverseGeocode(lat, lng);
-        if (address) setSearchInput(address);
+        setLoadingAction(null);
     }
 
     return (
@@ -214,30 +209,14 @@ export default function Home() {
                     <div className="w-full">
                         <div className="w-full h-64 xs:h-80 sm:h-96 md:h-[32rem] lg:h-[36rem] border rounded bg-gray-100 flex items-center justify-center mb-4 sm:mb-6 z-0 relative">
                             <DynamicMapComponent
-                                onLocationSelect={handleMapLocationSelect}
+                                onLocationSelect={async (lat, lng) => {
+                                    setSelectedLocation([lat, lng]);
+                                    const address = await reverseGeocode(lat, lng);
+                                    if (address) setSearchInput(address);
+                                }}
                                 selectedLocation={selectedLocation}
                                 clinicMarkers={filteredClinics}
                             />
-                            {searchLoading && (
-                                <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
-                                    <svg className="animate-spin h-10 w-10 text-blue-500" viewBox="0 0 24 24">
-                                        <circle
-                                            className="opacity-25"
-                                            cx="12"
-                                            cy="12"
-                                            r="10"
-                                            stroke="currentColor"
-                                            strokeWidth="4"
-                                            fill="none"
-                                        />
-                                        <path
-                                            className="opacity-75"
-                                            fill="currentColor"
-                                            d="M4 12a8 8 0 018-8v8z"
-                                        />
-                                    </svg>
-                                </div>
-                            )}
                         </div>
                         <form
                             onSubmit={handleLocationSearch}
@@ -254,30 +233,12 @@ export default function Home() {
                             <button
                                 type="submit"
                                 className="px-4 py-3 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition flex items-center justify-center text-base"
-                                disabled={searchLoading || !searchInput}
+                                disabled={loadingAction !== null || !searchInput}
                                 aria-label="Search"
                             >
-                                {searchLoading ? (
+                                {loadingAction === "search" ? (
                                     <span className="flex items-center gap-2">
-                                        <svg
-                                            className="animate-spin h-5 w-5 text-blue-500"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <circle
-                                                className="opacity-25"
-                                                cx="12"
-                                                cy="12"
-                                                r="10"
-                                                stroke="currentColor"
-                                                strokeWidth="4"
-                                                fill="none"
-                                            />
-                                            <path
-                                                className="opacity-75"
-                                                fill="currentColor"
-                                                d="M4 12a8 8 0 018-8v8z"
-                                            />
-                                        </svg>
+                                        <Cardio size="24" stroke="3" speed="1.2" color="black" />
                                         Searching...
                                     </span>
                                 ) : (
@@ -289,26 +250,35 @@ export default function Home() {
                             type="button"
                             className="w-full px-4 py-3 rounded border-2 bg-green-500 text-white border-green-500 shadow hover:bg-green-600 transition flex items-center justify-center text-base mb-2"
                             onClick={() => {
+                                setLoadingAction("geolocation");
                                 if (!navigator.geolocation) {
                                     setSearchError("Geolocation is not supported by your browser.");
+                                    setLoadingAction(null);
                                     return;
                                 }
-                                setSearchLoading(true);
                                 navigator.geolocation.getCurrentPosition(
                                     (pos) => {
                                         setSelectedLocation([pos.coords.latitude, pos.coords.longitude]);
-                                        setSearchLoading(false);
                                         setSearchError("");
+                                        setLoadingAction(null);
                                     },
                                     () => {
                                         setSearchError("Unable to retrieve your location.");
-                                        setSearchLoading(false);
+                                        setLoadingAction(null);
                                     }
                                 );
                             }}
                             aria-label="Use My Location"
+                            disabled={loadingAction !== null}
                         >
-                            Use My Location
+                            {loadingAction === "geolocation" ? (
+                                <span className="flex items-center gap-2">
+                                    <Cardio size="24" stroke="3" speed="1.2" color="black" />
+                                    Locating...
+                                </span>
+                            ) : (
+                                "Use My Location"
+                            )}
                         </button>
                         {/* Reserve space for error message to prevent layout shift */}
                         <div style={{ minHeight: "2rem" }}>
@@ -322,11 +292,14 @@ export default function Home() {
                             {[1, 5, 10].map((km) => (
                                 <button
                                     key={km}
-                                    className={`px-4 py-2 sm:px-6 sm:py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition text-base ${
-                                        radius === km ? "ring-2 ring-blue-400 text-white" : ""
+                                    className={`px-4 py-2 sm:px-6 sm:py-2 rounded border-2 bg-accent border-accent shadow hover:bg-blue-400 hover:text-white transition text-base ${
+                                        radius === km
+                                            ? "ring-2 ring-blue-400 text-white"
+                                            : "text-background"
                                     }`}
                                     onClick={() => setRadius(km)}
                                     aria-label={`Filter clinics within ${km} km`}
+                                    disabled={loadingAction !== null}
                                 >
                                     {km} km
                                 </button>
@@ -334,31 +307,17 @@ export default function Home() {
                         </div>
                         <button
                             className="px-4 py-3 sm:px-6 sm:py-2 rounded border-2 bg-accent text-background border-accent shadow hover:bg-blue-400 hover:text-white transition mb-2 w-full flex items-center justify-center text-base"
-                            disabled={!selectedLocation || searchLoading}
-                            onClick={handleFindClinics}
+                            disabled={!selectedLocation || loadingAction !== null}
+                            onClick={() => {
+                                setLoadingAction("findClinics");
+                                handleFindClinics();
+                                setLoadingAction(null);
+                            }}
                             aria-label="Find Clinics"
                         >
-                            {searchLoading ? (
+                            {loadingAction === "findClinics" ? (
                                 <span className="flex items-center gap-2">
-                                    <svg
-                                        className="animate-spin h-5 w-5 text-blue-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <circle
-                                            className="opacity-25"
-                                            cx="12"
-                                            cy="12"
-                                            r="10"
-                                            stroke="currentColor"
-                                            strokeWidth="4"
-                                            fill="none"
-                                        />
-                                        <path
-                                            className="opacity-75"
-                                            fill="currentColor"
-                                            d="M4 12a8 8 0 018-8v8z"
-                                        />
-                                    </svg>
+                                    <Cardio size="24" stroke="3" speed="1.2" color="black" />
                                     Loading...
                                 </span>
                             ) : (
@@ -374,7 +333,7 @@ export default function Home() {
                                     className="border rounded-lg p-4 bg-white shadow flex flex-col sm:flex-row items-start sm:items-center justify-between animate-fadeInCard"
                                 >
                                     <div>
-                                        <h2 className="font-bold text-lg mb-1 text-accent card-details">{clinic.name}</h2>
+                                        <h2 className="font-bold text-lg mb-1 text-gray-700 card-details">{clinic.name}</h2>
                                         <div className="text-gray-700 mb-1">Phone: {clinic.phone}</div>
                                         <div className="text-gray-700 mb-1">Availability: {clinic.availability}</div>
                                         <a

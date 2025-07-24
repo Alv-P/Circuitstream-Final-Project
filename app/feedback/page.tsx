@@ -1,31 +1,50 @@
 "use client";
 
+import { useState } from "react";
+
 export default function FeedbackPage() {
-    return (
-        <section className="w-full max-w-3xl mx-auto mt-16 mb-16 p-6 bg-white rounded shadow">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Feedback</h2>
-            <form
-                className="flex flex-col gap-4"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    alert("Thank you for your feedback!");
-                }}
-            >
-                <label className="font-semibold text-gray-800">
-                    Your Feedback:
-                    <textarea
-                        className="w-full mt-2 p-2 border rounded"
-                        rows={4}
-                        required
-                    />
-                </label>
-                <button
-                    type="submit"
-                    className="px-4 py-2 rounded bg-accent text-background border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition font-semibold"
-                >
-                    Submit
-                </button>
-            </form>
-        </section>
-    );
+  const [feedback, setFeedback] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    const res = await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ feedback }),
+    });
+    setLoading(false);
+    if (res.ok) {
+      setFeedback("");
+    }
+  }
+
+  return (
+    <div className="min-h-screen p-8 bg-[color:var(--background)]">
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto w-[500px] bg-white rounded-xl shadow p-8 flex flex-col gap-6 mt-12"
+      >
+        <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
+          Feedback
+        </h1>
+        <textarea
+          className="w-full p-4 border rounded focus:outline-none focus:ring-2 focus:ring-accent text-base"
+          rows={6}
+          placeholder="Your feedback..."
+          value={feedback}
+          onChange={(e) => setFeedback(e.target.value)}
+          required
+        />
+        <button
+          type="submit"
+          className="bg-accent text-white rounded px-6 py-3 font-semibold hover:bg-blue-600 transition text-lg"
+          disabled={loading}
+        >
+          {loading ? "Sending..." : "Submit"}
+        </button>
+      </form>
+    </div>
+  );
 }

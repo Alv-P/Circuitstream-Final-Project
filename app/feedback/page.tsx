@@ -22,20 +22,21 @@ export default function FeedbackPage() {
     setEmailError("");
     setLoading(true);
 
-    // Send to local API
-    const res = await fetch("/api/feedback", {
+    // Send to Google Form
+    const formData = new FormData();
+    formData.append("entry.955442583", `${email} - ${feedback}`);  // Feedback field ID, combined value
+
+    await fetch("https://docs.google.com/forms/d/e/1FAIpQLSex0WvKFTpY3xWhKvO0QYk_KrCB9vrzHNkYYpwscHeKIKTpmw/formResponse", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ feedback, email }),
+      mode: "no-cors",
+      body: formData,
     });
 
     setLoading(false);
-    if (res.ok) {
-      setFeedback("");
-      setEmail("");
-      setConfirmation(true);
-      setTimeout(() => setConfirmation(false), 2000); // Show for 2 seconds
-    }
+    setFeedback("");
+    setEmail("");
+    setConfirmation(true);
+    setTimeout(() => setConfirmation(false), 2000); // Show for 2 seconds
   }
 
   return (

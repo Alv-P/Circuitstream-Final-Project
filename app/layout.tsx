@@ -32,6 +32,9 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <title>VetFinder</title>
+      </head>
       <body
         className={`
           ${josefinSans.variable} ${nunito.variable} ${roboto.variable} antialiased

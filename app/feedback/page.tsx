@@ -46,7 +46,7 @@ export default function FeedbackPage() {
         className="mx-auto w-[500px] bg-white rounded-xl shadow p-8 flex flex-col gap-6 mt-12"
       >
         <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
-          Feedback
+          VetFinder Feedback
         </h1>
         <input
           type="email"

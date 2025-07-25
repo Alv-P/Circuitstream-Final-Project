@@ -307,8 +307,8 @@ export default function Home() {
             {/* Main App Content */}
             <div className="w-full min-h-screen p-2 sm:p-4 md:p-8 bg-[color:var(--background)] text-[color:var(--foreground)] font-sans flex flex-col items-center">
                 <div className="w-full max-w-3xl flex flex-col items-center mx-auto">
-                    <h1 className="text-4xl font-bold mb-4 text-center text-gray-800">
-                        VetFinder
+                    <h1 className="text-4xl font-bold mb-4 text-center text-white">
+                        Clinic Locator
                     </h1>
                     <p className="text-lg sm:text-xl md:text-2xl text-center mb-4 text-accent2">
                         Find veterinary clinics near you

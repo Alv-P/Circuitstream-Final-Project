@@ -46,7 +46,7 @@ export default function RootLayout({
         <header className="fixed top-0 left-0 z-50 w-full bg-accent text-background shadow rounded-b-xl">
           <nav className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
             <div className="font-bold text-base sm:text-lg md:text-xl">
-              Vet Clinic Locator
+              VetFinder
             </div>
             <div className="relative">
               <button

@@ -305,14 +305,20 @@ export default function Home() {
     return (
         <ErrorBoundary>
             {/* Main App Content */}
-            <div className="w-full min-h-screen p-2 sm:p-4 md:p-8 bg-[color:var(--background)] text-[color:var(--foreground)] font-sans flex flex-col items-center">
+            <div className="w-full min-h-screen p-2 sm:p-4 md:p-8 bg-[color:var(--background)] text-[color:var(--foreground)] font-sans flex flex-col items-center animate-fadeIn">
                 <div className="w-full max-w-3xl flex flex-col items-center mx-auto">
-                    <h1 className="text-4xl font-bold mb-4 text-center text-white">
-                        Clinic Locator
+                    <h1 className="text-4xl font-bold mb-4 text-center text-navy font-inter">
+                        VetFinder
                     </h1>
-                    <p className="text-lg sm:text-xl md:text-2xl text-center mb-4 text-accent2">
+                    <p className="text-lg text-center mb-6 text-accent font-inter">
                         Find veterinary clinics near you
                     </p>
+                    <a
+                        href="/feedback"
+                        className="inline-block bg-primary text-white font-bold rounded-full px-8 py-4 shadow-glass hover:bg-accent button-hover transition text-lg mb-8"
+                    >
+                        Give Feedback
+                    </a>
                     {isOffline && (
                         <div
                             className="w-full bg-red-100 text-red-700 text-center py-2 mb-2 rounded"
@@ -461,39 +467,27 @@ export default function Home() {
                             {filteredClinics.map((clinic) => (
                                 <div
                                     key={clinic.id}
-                                    className="border rounded-lg p-4 bg-white shadow flex flex-col sm:flex-row items-start sm:items-center justify-between animate-fadeInCard"
+                                    className="bg-white rounded-xl shadow-glass p-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center"
                                 >
                                     <div>
-                                        <h2 className="font-bold text-lg mb-1 text-gray-700 card-details">{clinic.name}</h2>
-                                        <div className="text-gray-700 mb-1">Phone: {clinic.phone}</div>
-                                        <div className="text-gray-700 mb-1">Availability: {clinic.availability}</div>
-                                        <div className="text-yellow-600 mb-1 flex items-center">
-                                            Rating: {renderStars(clinic.rating)}
-                                            <span className="ml-2 text-gray-700 text-sm">({clinic.rating.toFixed(1)})</span>
+                                        <h2 className="font-bold text-lg mb-1 text-[#001011]">{clinic.name}</h2>
+                                        <div className="text-base mb-1 text-[#001011]">Phone: {clinic.phone}</div>
+                                        <div className="text-base mb-1 text-[#001011]">Availability: {clinic.availability}</div>
+                                        <div className="text-base mb-1 text-[#001011]">
+                                            Rating: {renderStars(clinic.rating)} ({clinic.rating})
                                         </div>
-                                        <a
-                                            href={clinic.website}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 underline"
-                                        >
+                                        <a href={clinic.website} className="text-primary underline font-semibold text-[#001011]">
                                             More Details
                                         </a>
                                     </div>
-                                    <div className="mt-2 sm:mt-0 sm:ml-4 text-sm text-accent3 card-meta">
-                                        {clinic.distance.toFixed(2)} km away
-                                    </div>
-                                    {/* Directions Button */}
-                                    {selectedLocation && (
-                                        <a
-                                            href={`https://www.google.com/maps/dir/${selectedLocation[0]},${selectedLocation[1]}/${clinic.location[0]},${clinic.location[1]}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="mt-2 sm:mt-0 sm:ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm font-semibold"
-                                        >
+                                    <div className="flex flex-col items-end w-full sm:w-auto mt-4 sm:mt-0">
+                                        <button className="bg-primary text-white px-4 py-2 rounded font-semibold mb-2">
                                             Directions
-                                        </a>
-                                    )}
+                                        </button>
+                                        <div className="text-sm text-right text-[#001011]">
+                                            {clinic.distance.toFixed(2)} km away
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
                         </div>

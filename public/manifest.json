@@ -1,0 +1,21 @@
+{
+  "name": "Vet Finder",
+  "short_name": "VetFinder",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#E9FFF9",
+  "theme_color": "#467599",
+  "description": "Find veterinary clinics near you.",
+  "icons": [
+    {
+      "src": "/logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

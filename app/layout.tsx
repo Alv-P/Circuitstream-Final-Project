@@ -1,9 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { Josefin_Sans, Nunito, Roboto } from "next/font/google";
+import Image from "next/image";
+import { Inter, Josefin_Sans, Nunito, Roboto } from "next/font/google";
 import "./globals.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
 
 const josefinSans = Josefin_Sans({
   variable: "--font-josefin",
@@ -29,76 +37,132 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [theme, setTheme] = useState("light");
+  const pathname = usePathname();
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   return (
     <html lang="en">
       <head>
         <title>VetFinder</title>
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body
         className={`
-          ${josefinSans.variable} ${nunito.variable} ${roboto.variable} antialiased
-          bg-[color:var(--background)] text-[color:var(--foreground)]
-          min-h-screen font-sans
+          ${inter.variable} ${josefinSans.variable} ${nunito.variable} ${roboto.variable} antialiased
+          bg-background text-foreground min-h-screen font-sans
         `}
       >
-        {/* Header always full width and sticky above content */}
-        <header className="fixed top-0 left-0 z-50 w-full bg-accent text-background shadow rounded-b-xl">
-          <nav className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
-            <div className="font-bold text-base sm:text-lg md:text-xl">
-              VetFinder
+        <header className="fixed top-0 left-0 z-50 w-full bg-accent text-background shadow-glass rounded-b-xl font-inter">
+          <nav className="max-w-6xl mx-auto flex items-center justify-between px-2 py-2 sm:px-4 sm:py-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Link href="/" className="flex items-center gap-2">
+                <Image
+                  src="/images/paw-logo.png"
+                  alt="VetFinder Paw Logo"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                  priority
+                />
+                <span className="font-bold text-base sm:text-lg md:text-xl text-background">
+                  VetFinder
+                </span>
+              </Link>
             </div>
-            <div className="relative">
+            <div className="flex items-center gap-2 sm:gap-4">
               <button
-                className="px-4 py-2 rounded-full bg-background text-blue-300 border-2 border-accent shadow hover:bg-blue-400 hover:text-white transition text-base font-semibold flex items-center justify-center"
-                onClick={() => setMenuOpen((open) => !open)}
-                aria-haspopup="true"
-                aria-expanded={menuOpen}
+                className="px-3 py-2 rounded-full bg-background text-accent border border-accent shadow button-hover transition font-semibold min-h-[48px]"
+                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                aria-label="Toggle theme"
               >
-                Menu
-                <svg
-                  className="ml-2 w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+                {theme === "light" ? "🌙 Dark" : "☀️ Light"}
               </button>
-              {menuOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg border z-50">
+              <div className="relative">
+                <button
+                  className="px-4 py-2 rounded-full bg-accent text-white border-2 border-accent shadow hover:bg-primary hover:text-white transition text-base font-semibold flex items-center justify-center min-h-[48px] sm:hidden"
+                  onClick={() => setMenuOpen((open) => !open)}
+                  aria-haspopup="true"
+                  aria-expanded={menuOpen}
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                </button>
+                <div className="hidden sm:flex gap-2">
                   <Link
                     href="/"
-                    className="block px-4 py-2 text-blue-700 hover:bg-blue-100 transition text-base font-semibold"
-                    onClick={() => setMenuOpen(false)}
+                    className={`px-4 py-2 rounded text-white bg-accent hover:bg-primary transition font-semibold min-h-[48px] ${
+                      pathname === "/" ? "bg-primary font-bold" : ""
+                    }`}
                   >
                     Home
                   </Link>
                   <Link
                     href="/feedback"
-                    className="block px-4 py-2 text-blue-700 hover:bg-blue-100 transition text-base font-semibold"
-                    onClick={() => setMenuOpen(false)}
+                    className={`px-4 py-2 rounded text-white bg-accent hover:bg-primary transition font-semibold min-h-[48px] ${
+                      pathname === "/feedback" ? "bg-primary font-bold" : ""
+                    }`}
                   >
                     Feedback
                   </Link>
                   <Link
                     href="/about"
-                    className="block px-4 py-2 text-blue-700 hover:bg-blue-100 transition text-base font-semibold"
-                    onClick={() => setMenuOpen(false)}
+                    className={`px-4 py-2 rounded text-white bg-accent hover:bg-primary transition font-semibold min-h-[48px] ${
+                      pathname === "/about" ? "bg-primary font-bold" : ""
+                    }`}
                   >
                     About Us
                   </Link>
                 </div>
-              )}
+                {menuOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-accent rounded shadow-lg border border-accent z-50 flex flex-col sm:hidden">
+                    <Link
+                      href="/"
+                      className={`block px-4 py-3 text-white hover:bg-primary hover:text-white transition text-base font-semibold min-h-[48px] ${
+                        pathname === "/" ? "bg-primary font-bold text-white" : ""
+                      }`}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Home
+                    </Link>
+                    <Link
+                      href="/feedback"
+                      className={`block px-4 py-3 text-white hover:bg-primary hover:text-white transition text-base font-semibold min-h-[48px] ${
+                        pathname === "/feedback" ? "bg-primary font-bold text-white" : ""
+                      }`}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Feedback
+                    </Link>
+                    <Link
+                      href="/about"
+                      className={`block px-4 py-3 text-white hover:bg-primary hover:text-white transition text-base font-semibold min-h-[48px] ${
+                        pathname === "/about" ? "bg-primary font-bold text-white" : ""
+                      }`}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      About Us
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </nav>
         </header>
-        {/* Main content with enough top padding for header */}
         <main className="w-full flex-1 flex flex-col justify-center items-center px-4 py-8 pt-32">
           {children}
         </main>

@@ -43,7 +43,7 @@ export default function FeedbackPage() {
     <div className="min-h-screen p-8 bg-[color:var(--background)]">
       <form
         onSubmit={handleSubmit}
-        className="mx-auto w-[500px] bg-white rounded-xl shadow p-8 flex flex-col gap-6 mt-12"
+        className="mx-auto w-full max-w-md sm:max-w-lg md:max-w-xl bg-white rounded-xl shadow p-4 sm:p-6 md:p-8 flex flex-col gap-6 mt-8"
       >
         <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
           VetFinder Feedback

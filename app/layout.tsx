@@ -40,8 +40,24 @@ export default function RootLayout({
   const [theme, setTheme] = useState("light");
   const pathname = usePathname();
 
+  // On mount, read theme from localStorage
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    const storedTheme =
+      typeof window !== "undefined" ? localStorage.getItem("theme") : null;
+    if (storedTheme === "dark" || storedTheme === "light") {
+      setTheme(storedTheme);
+      document.documentElement.setAttribute("data-theme", storedTheme);
+    } else {
+      document.documentElement.setAttribute("data-theme", theme);
+    }
+  }, []);
+
+  // Whenever theme changes, update localStorage and html attribute
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("theme", theme);
+      document.documentElement.setAttribute("data-theme", theme);
+    }
   }, [theme]);
 
   return (

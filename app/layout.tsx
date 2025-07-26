@@ -76,7 +76,10 @@ export default function RootLayout({
             <div className="flex items-center gap-2 sm:gap-4">
               <button
                 className="px-3 py-2 rounded-full bg-background text-accent border border-accent shadow button-hover transition font-semibold min-h-[48px]"
-                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                onClick={e => {
+                  e.stopPropagation(); // Prevent bubbling
+                  setTheme(theme === "light" ? "dark" : "light");
+                }}
                 aria-label="Toggle theme"
               >
                 {theme === "light" ? "🌙 Dark" : "☀️ Light"}

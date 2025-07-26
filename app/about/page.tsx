@@ -69,17 +69,14 @@ export default function AboutPage() {
         {/* About Section */}
         {tab === "about" && (
           <>
-            <div
-              className="w-32 h-32 mb-6 rounded-full bg-secondary border-4 border-accent flex items-center justify-center"
-              aria-label="Profile Picture"
-            >
+            <div className="flex justify-center items-center w-32 h-32 rounded-full overflow-hidden border-4 border-primary shadow-lg mx-auto mb-4">
               <Image
                 src="/Circuitstream-Final-Project-Alvin/images/profile.jpg"
                 alt="Profile picture of Paula, Vet Finder creator"
                 width={128}
                 height={128}
-                className="rounded-full"
-                loading="lazy"
+                className="object-cover w-full h-full"
+                priority
               />
             </div>
             <h1 className="text-3xl font-bold mb-2 text-center" style={{ color: "#001011" }}>

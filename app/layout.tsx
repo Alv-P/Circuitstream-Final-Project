@@ -59,16 +59,16 @@ export default function RootLayout({
         <header className="fixed top-0 left-0 z-50 w-full bg-accent text-background shadow-glass rounded-b-xl font-inter">
           <nav className="max-w-6xl mx-auto flex items-center justify-between px-2 py-2 sm:px-4 sm:py-3">
             <div className="flex items-center gap-2 sm:gap-3">
-              <Link href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-4">
                 <Image
                   src="/Circuitstream-Final-Project-Alvin/images/paw-logo.png"
                   alt="VetFinder Paw Logo"
-                  width={40}
-                  height={40}
+                  width={64} // Increased from 40 to 64
+                  height={64} // Increased from 40 to 64
                   className="rounded-full"
                   priority
                 />
-                <span className="font-bold text-base sm:text-lg md:text-xl text-background">
+                <span className="font-bold text-lg sm:text-xl md:text-2xl text-background">
                   VetFinder
                 </span>
               </Link>

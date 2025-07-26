@@ -31,32 +31,21 @@ const roboto = Roboto({
   weight: ["400", "700"],
 });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== "undefined") {
+      const storedTheme = localStorage.getItem("theme");
+      if (storedTheme === "dark" || storedTheme === "light") return storedTheme;
+    }
+    return "light";
+  });
   const pathname = usePathname();
 
-  // On mount, read theme from localStorage
   useEffect(() => {
-    const storedTheme =
-      typeof window !== "undefined" ? localStorage.getItem("theme") : null;
-    if (storedTheme === "dark" || storedTheme === "light") {
-      setTheme(storedTheme);
-      document.documentElement.setAttribute("data-theme", storedTheme);
-    } else {
-      document.documentElement.setAttribute("data-theme", theme);
-    }
-  }, []);
-
-  // Whenever theme changes, update localStorage and html attribute
-  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
     if (typeof window !== "undefined") {
       localStorage.setItem("theme", theme);
-      document.documentElement.setAttribute("data-theme", theme);
     }
   }, [theme]);
 

@@ -61,7 +61,7 @@ export default function RootLayout({
             <div className="flex items-center gap-2 sm:gap-3">
               <Link href="/" className="flex items-center gap-2">
                 <Image
-                  src="/paw-logo.png"
+                  src="/Circuitstream-Final-Project-Alvin/paw-logo.png"
                   alt="VetFinder Paw Logo"
                   width={40}
                   height={40}

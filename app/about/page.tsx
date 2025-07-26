@@ -74,7 +74,7 @@ export default function AboutPage() {
               aria-label="Profile Picture"
             >
               <Image
-                src="/profile.webp"
+                src="/Circuitstream-Final-Project-Alvin/images/profile.jpg"
                 alt="Profile picture of Paula, Vet Finder creator"
                 width={128}
                 height={128}
